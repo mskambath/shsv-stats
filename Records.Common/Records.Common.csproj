@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{086C0686-EA78-4549-8D7E-83A6D8DE70B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Records.Common</RootNamespace>
+    <AssemblyName>Records.Common</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <DebugSymbols>true</DebugSymbols>
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Xwt">
+      <HintPath>..\packages\Xwt.0.2.143\lib\net40\Xwt.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Samples\Spinners.cs" />
+    <Compile Include="Samples\LinkLabels.cs" />
+    <Compile Include="Samples\ListView1.cs" />
+    <Compile Include="MainWindow.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App.cs">
+      <DeployService-Deploy>True</DeployService-Deploy>
+      <Gettext-ScanForTranslations>False</Gettext-ScanForTranslations>
+    </Compile>
+    <Compile Include="Samples\Windows.cs" />
+    <Compile Include="Samples\TextEntries.cs" />
+    <Compile Include="Samples\Labels.cs" />
+    <Compile Include="Samples\TreeViews.cs" />
+    <Compile Include="Samples\PanedViews.cs" />
+    <Compile Include="Samples\ListBoxSample.cs" />
+    <Compile Include="Samples\ProgressBarSample.cs" />
+    <Compile Include="Samples\Markdown.cs" />
+    <Compile Include="Samples\ListView2.cs" />
+    <Compile Include="Samples\WebViewSample.cs" />
+    <Compile Include="Samples\MessageDialogs.cs" />
+    <Compile Include="Samples\MultithreadingSample.cs" />
+    <Compile Include="Samples\ListViewCellBounds.cs" />
+    <Compile Include="Samples\TreeViewCellBounds.cs" />
+    <Compile Include="Samples\ListViewEntries.cs" />
+    <Compile Include="Samples\ListViewCombos.cs" />
+    <Compile Include="Samples\PopupWindows.cs" />
+    <Compile Include="Samples\TreeViewCustomStore.cs" />
+    <Compile Include="Samples\TreeViewEvents.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="document-generic.png">
+      <LogicalName>document-generic.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="document-generic%402x.png">
+      <LogicalName>document-generic@2x.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="icons\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
