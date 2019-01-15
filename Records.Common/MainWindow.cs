@@ -8,46 +8,41 @@ namespace Records.Common
 	public class MainWindow: Window
 	{
 
-		ListStore store;
+		ListStore storeData;
+		ListStore storeViews;
+		ListView lvViews;
+		ListView lvData;
+
 		Image icon;
 		VBox sampleBox;
 		Label title;
+
 		/*Widget currentSample;*/
 		
 /*		DataField<string> nameCol = new DataField<string> ();
 		DataField<Sample> widgetCol = new DataField<Sample> ();
 		DataField<Image> iconCol = new DataField<Image> ();*/
 		
-		StatusIcon statusIcon;
-		
+
 		public MainWindow ()
 		{
 			Title = "SHSV Rekordverwaltung";
 			Width = 500;
 			Height = 400;
-			/*
-			try {
-				statusIcon = Application.CreateStatusIcon ();
-				statusIcon.Menu = new Menu ();
-				statusIcon.Menu.Items.Add (new MenuItem ("Test"));
-				statusIcon.Image = Image.FromResource (GetType (), "package.png");
-			} catch {
-				Console.WriteLine ("Status icon could not be shown");
-			}
-			*/
+	
 
 			Menu menu = new Menu ();
-			var file = new MenuItem ("File");
+			var file = new MenuItem ("Datei");
 			file.SubMenu = new Menu ();
-			MenuItem mi_newView = new MenuItem("New Record Table");
+			MenuItem mi_newView = new MenuItem("Neue Tabelle");
 			file.SubMenu.Items.Add(mi_newView);
 			mi_newView.Clicked += HandleCreateNewView;
 
-			MenuItem mi_newRecords = new MenuItem("Find New Records");
+			MenuItem mi_newRecords = new MenuItem("Finde neue Rekorde");
 			file.SubMenu.Items.Add(mi_newRecords);
 			mi_newRecords.Clicked += HandleFindNewRecords;
 
-			MenuItem mi_exit = new MenuItem ("Exit");
+			MenuItem mi_exit = new MenuItem ("Schließen");
 			file.SubMenu.Items.Add(mi_exit);
 			mi_exit.Clicked += delegate {
 				Application.Exit();
@@ -64,42 +59,86 @@ namespace Records.Common
 
 
 
-			ListView lvViews = new ListView();
+			lvViews= new ListView();
+			lvData = new ListView();
+
 			var tfLabel = new DataField<string>();
 			var tfCourse = new DataField<string>();
 			var tfType = new DataField<string>();
 			var tfSex = new DataField<string>();
 			var tfAK = new DataField<string>();
 
-			store = new ListStore(tfLabel,tfCourse,tfType,tfSex,tfAK);
-			
-			lvViews.DataSource = store;
+			var tfDisc = new DataField<string>();
+			var tfSwimmerName = new DataField<string>();
+			var tfSwimmerId = new DataField<string>();
+			var tfClub = new DataField<string>();
+			var tfClubId = new DataField<string>();
+			var tfAge = new DataField<string>();
+			var tfTime = new DataField<string>();
+			var tfDate = new DataField<DateTime>();
+
+			storeViews = new ListStore(tfLabel,tfCourse,tfType,tfSex,tfAK);
+			storeData = new ListStore(tfDisc, tfSwimmerName, tfSwimmerId, tfClub, tfClubId, tfAge, tfDate, tfTime);
+
+			lvViews.DataSource = storeViews;
 			lvViews.GridLinesVisible = GridLines.Horizontal;
-
-
 			lvViews.Columns.Add(new ListViewColumn("Bezeichnung", new TextCellView { Editable = false, TextField = tfLabel }));
 			lvViews.Columns.Add(new ListViewColumn("Bahn", new TextCellView { Editable = false, TextField = tfCourse }));
 			lvViews.Columns.Add(new ListViewColumn("Geschlecht", new TextCellView { Editable = false, TextField = tfSex }));
 			lvViews.Columns.Add(new ListViewColumn("AK", new TextCellView { Editable = false, TextField = tfAK }));
 
 
+			var ageCol = new ItemCollection();
+			ageCol.Add(0);
+			ageCol.Add(1);
+			ageCol.Add(2);
+			ageCol.Add(1991);
+
+			lvData.DataSource = storeData;
+			lvData.Columns.Add(new ListViewColumn("Strecke",   new TextCellView { Editable = false, TextField = tfDisc }));
+			lvData.Columns.Add(new ListViewColumn("Schwimmer", new TextCellView { Editable = true, TextField = tfSwimmerName }));
+			lvData.Columns.Add(new ListViewColumn("ID", new TextCellView { Editable = true, TextField = tfSwimmerId }));
+			lvData.Columns.Add(new ListViewColumn("Club", new TextCellView { Editable = true, TextField = tfClub }));
+			lvData.Columns.Add(new ListViewColumn("ClubId", new TextCellView { Editable = true, TextField = tfClubId }));
+			lvData.Columns.Add(new ListViewColumn("Alter", new ComboBoxCellView { Editable = true, SelectedTextField = tfAge, Items = ageCol }));
+			lvData.Columns.Add(new ListViewColumn("Datum", new TextCellView { Editable = true, TextField = tfDate }));
+			lvData.Columns.Add(new ListViewColumn("Zeit", new TextCellView { Editable = true, TextField = tfTime }));
+
+
 
 			for (int n = 0; n < 10; n++)
 			{
-				var r = store.AddRow();
-				store.SetValue(r, tfLabel, "Jahrgangsrekorde" );
-				store.SetValue(r, tfCourse, "50m" );
-				store.SetValue(r, tfSex, "männlich");
-				store.SetValue(r, tfAK, "AK "+n);
-			}
+				var r = storeViews.AddRow();
+				storeViews.SetValue(r, tfLabel, "Jahrgangsrekorde" );
+				storeViews.SetValue(r, tfCourse, "50m" );
+				storeViews.SetValue(r, tfSex, "männlich");
+				storeViews.SetValue(r, tfAK, "AK "+n);
 
+				 r = storeData.AddRow();
+				storeData.SetValue(r, tfDisc, "50R");
+				storeData.SetValue(r, tfSwimmerName, "Skambath, Malte");
+				storeData.SetValue(r, tfSwimmerId, "127006");
+				storeData.SetValue(r, tfClub, "50R");
+				storeData.SetValue(r, tfClubId, "0000");
+				storeData.SetValue(r, tfAge, "1991");
+				storeData.SetValue<DateTime>(r, tfDate, DateTime.Now.Date);
+				storeData.SetValue(r, tfTime, "00:00,00");
+			}
+			lvViews.SelectionChanged += OnSelectView;
+			lvViews.ButtonPressed += OnSelectView;
+			lvViews.KeyPressed += OnSelectView;
+			lvViews.RowActivated += OnSelectView;
+			lvViews.GotFocus += OnSelectView;
+
+			lvViews.SelectionMode = SelectionMode.Single;
+			
 
 			box.Panel1.Content = vbox;
 			vbox.PackStart(lvViews, true);
 			var btn = new Button("Add Row");
 			btn.Clicked += delegate {
-				var row = store.AddRow();
-				store.SetValues(row, tfLabel, "New editable text", tfLabel, "New non-editable text");
+				var row = storeViews.AddRow();
+				storeViews.SetValues(row, tfLabel, "New editable text", tfLabel, "New non-editable text");
 				lvViews.SelectRow(row);//.StartEditingCell(row, textCellView);
 			};
 			vbox.PackStart(btn, false, hpos: WidgetPlacement.Start);
@@ -118,12 +157,13 @@ namespace Records.Common
 			vbox.PackStart(b2, false, hpos: WidgetPlacement.Start);
 
 			sampleBox = new VBox ();
-			title = new Label ("Sample:");
+			title = new Label ("");
 			sampleBox.PackStart (title);
+			sampleBox.PackStart(lvData,true);
 			
 			box.Panel2.Content = sampleBox;
 			box.Panel2.Resize = true;
-			box.Position = 160;
+			box.Position = 300;
 
 			Content = box;
 			
@@ -146,6 +186,14 @@ namespace Records.Common
 			if (statusIcon != null) {
 				statusIcon.Dispose ();
 			}
+		}
+
+		void OnSelectView(object sender, EventArgs e)
+		{
+			storeData.Clear();
+			title.Text = lvViews.DataSource.GetValue(lvViews.SelectedRow, 0).ToString() + " " + lvViews.DataSource.GetValue(lvViews.SelectedRow, 1).ToString() +
+				" " +
+			lvViews.DataSource.GetValue(lvViews.SelectedRow, 2).ToString() + " " + lvViews.DataSource.GetValue(lvViews.SelectedRow, 3).ToString();
 		}
 
 		void HandleCreateNewView(object sender, EventArgs e)
