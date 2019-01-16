@@ -35,6 +35,9 @@
     <Reference Include="Xwt">
       <HintPath>..\packages\Xwt.0.2.146\lib\net40\Xwt.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.12\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Samples\Spinners.cs" />
@@ -67,6 +70,18 @@
     <Compile Include="Samples\PopupWindows.cs" />
     <Compile Include="Samples\TreeViewCustomStore.cs" />
     <Compile Include="Samples\TreeViewEvents.cs" />
+    <Compile Include="Model\AgeGroup.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\CourseType.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\MeetInfo.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\Session.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\RecordDB.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\Sex.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\SingleRecordEntry.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\TeamRecordEntry.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\TimingType.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\SwimType.cs" />
+    <Compile Include="Model\Club.cs" />
+    <Compile Include="Model\Discipline.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -88,6 +103,7 @@
   </ProjectExtensions>
   <ItemGroup>
     <Folder Include="icons\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

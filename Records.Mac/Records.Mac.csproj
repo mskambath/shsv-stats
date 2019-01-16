@@ -53,10 +53,10 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
     <Reference Include="Xwt">
-      <HintPath>..\packages\Xwt.0.2.143\lib\net40\Xwt.dll</HintPath>
+      <HintPath>..\packages\Xwt.0.2.146\lib\net40\Xwt.dll</HintPath>
     </Reference>
     <Reference Include="Xwt.XamMac">
-      <HintPath>..\packages\Xwt.XamMac.0.2.143\lib\net40\Xwt.XamMac.dll</HintPath>
+      <HintPath>..\packages\Xwt.XamMac.0.2.146\lib\net40\Xwt.XamMac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

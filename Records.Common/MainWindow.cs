@@ -100,7 +100,7 @@ namespace Records.Common
 			lvData.Columns.Add(new ListViewColumn("ID", new TextCellView { Editable = true, TextField = tfSwimmerId }));
 			lvData.Columns.Add(new ListViewColumn("Club", new TextCellView { Editable = true, TextField = tfClub }));
 			lvData.Columns.Add(new ListViewColumn("ClubId", new TextCellView { Editable = true, TextField = tfClubId }));
-			lvData.Columns.Add(new ListViewColumn("Alter", new ComboBoxCellView { Editable = true, SelectedTextField = tfAge, Items = ageCol }));
+			lvData.Columns.Add(new ListViewColumn("Alter", new TextCellView { Editable = true, TextField = tfAge }));
 			lvData.Columns.Add(new ListViewColumn("Datum", new TextCellView { Editable = true, TextField = tfDate }));
 			lvData.Columns.Add(new ListViewColumn("Zeit", new TextCellView { Editable = true, TextField = tfTime }));
 
@@ -182,10 +182,7 @@ namespace Records.Common
 		protected override void Dispose (bool disposing)
 		{
 			base.Dispose (disposing);
-			
-			if (statusIcon != null) {
-				statusIcon.Dispose ();
-			}
+
 		}
 
 		void OnSelectView(object sender, EventArgs e)
