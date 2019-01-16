@@ -5,12 +5,15 @@ namespace Records.Common.Model
     {
         public string Name;
         public string Surname;
+		public string SwimmerId;
         public string Club;
-        public DateTime Date;
+		public string ClubId;
+		public string Date;
         public TimeSpan Time;
-        public string Discipline;
+        public Discipline Discipline;
         public AgeGroup Agegroup;
         public CourseType CourseType;
         public Sex sex;  
+
     }
 }

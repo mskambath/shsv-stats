@@ -13,16 +13,20 @@ namespace Records.Common
 		ListView lvViews;
 		ListView lvData;
 
+		DataField<string> tfDisc = new DataField<string>();
+		DataField<string> tfSwimmerName = new DataField<string>();
+		DataField<string> tfSwimmerId = new DataField<string>();
+		DataField<string> tfClub = new DataField<string>();
+		DataField<string> tfClubId = new DataField<string>();
+		DataField<string> tfAge = new DataField<string>();
+		DataField<string> tfTime = new DataField<string>();
+		DataField<string> tfDate = new DataField<string>();
+
+		Records.Common.Model.RecordDB db;
+
 		Image icon;
 		VBox sampleBox;
-		Label title;
 
-		/*Widget currentSample;*/
-		
-/*		DataField<string> nameCol = new DataField<string> ();
-		DataField<Sample> widgetCol = new DataField<Sample> ();
-		DataField<Image> iconCol = new DataField<Image> ();*/
-		
 
 		public MainWindow ()
 		{
@@ -56,7 +60,7 @@ namespace Records.Common
 
 			icon = Image.FromResource (typeof(App), "document-generic.png");
 
-
+			db = new Records.Common.Model.RecordDB();
 
 
 			lvViews= new ListView();
@@ -68,14 +72,7 @@ namespace Records.Common
 			var tfSex = new DataField<string>();
 			var tfAK = new DataField<string>();
 
-			var tfDisc = new DataField<string>();
-			var tfSwimmerName = new DataField<string>();
-			var tfSwimmerId = new DataField<string>();
-			var tfClub = new DataField<string>();
-			var tfClubId = new DataField<string>();
-			var tfAge = new DataField<string>();
-			var tfTime = new DataField<string>();
-			var tfDate = new DataField<DateTime>();
+		
 
 			storeViews = new ListStore(tfLabel,tfCourse,tfType,tfSex,tfAK);
 			storeData = new ListStore(tfDisc, tfSwimmerName, tfSwimmerId, tfClub, tfClubId, tfAge, tfDate, tfTime);
@@ -105,25 +102,17 @@ namespace Records.Common
 			lvData.Columns.Add(new ListViewColumn("Zeit", new TextCellView { Editable = true, TextField = tfTime }));
 
 
-
-			for (int n = 0; n < 10; n++)
+			foreach (var table in db.Views)
 			{
 				var r = storeViews.AddRow();
-				storeViews.SetValue(r, tfLabel, "Jahrgangsrekorde" );
-				storeViews.SetValue(r, tfCourse, "50m" );
-				storeViews.SetValue(r, tfSex, "männlich");
-				storeViews.SetValue(r, tfAK, "AK "+n);
-
-				 r = storeData.AddRow();
-				storeData.SetValue(r, tfDisc, "50R");
-				storeData.SetValue(r, tfSwimmerName, "Skambath, Malte");
-				storeData.SetValue(r, tfSwimmerId, "127006");
-				storeData.SetValue(r, tfClub, "50R");
-				storeData.SetValue(r, tfClubId, "0000");
-				storeData.SetValue(r, tfAge, "1991");
-				storeData.SetValue<DateTime>(r, tfDate, DateTime.Now.Date);
-				storeData.SetValue(r, tfTime, "00:00,00");
+				storeViews.SetValue(r, tfLabel, table.Name);
+				storeViews.SetValue(r, tfCourse, table.CourseType.ToString());
+				storeViews.SetValue(r, tfSex, table.Sex.ToString());
+				storeViews.SetValue(r, tfAK, table.AgeGroup.ToString());
 			}
+
+
+
 			lvViews.SelectionChanged += OnSelectView;
 			lvViews.ButtonPressed += OnSelectView;
 			lvViews.KeyPressed += OnSelectView;
@@ -157,8 +146,7 @@ namespace Records.Common
 			vbox.PackStart(b2, false, hpos: WidgetPlacement.Start);
 
 			sampleBox = new VBox ();
-			title = new Label ("");
-			sampleBox.PackStart (title);
+			//sampleBox.PackStart (title);
 			sampleBox.PackStart(lvData,true);
 			
 			box.Panel2.Content = sampleBox;
@@ -187,14 +175,20 @@ namespace Records.Common
 
 		void OnSelectView(object sender, EventArgs e)
 		{
+			Console.WriteLine("XYV");
 			storeData.Clear();
-			title.Text = lvViews.DataSource.GetValue(lvViews.SelectedRow, 0).ToString() + " " + lvViews.DataSource.GetValue(lvViews.SelectedRow, 1).ToString() +
-				" " +
-			lvViews.DataSource.GetValue(lvViews.SelectedRow, 2).ToString() + " " + lvViews.DataSource.GetValue(lvViews.SelectedRow, 3).ToString();
+			foreach(var entry in db.GetTable(db.Views.ToArray()[0])) {
+				var r = storeData.AddRow();
+				storeData.SetValue(r, tfDisc , entry.Discipline.ToString());
+				storeData.SetValue(r, tfAge, entry.Agegroup.ToString());
+				storeData.SetValue(r, tfClub, entry.Club);
+				storeData.SetValue(r, tfSwimmerName, entry.Name + ", " + entry.Surname);
+}
 		}
 
 		void HandleCreateNewView(object sender, EventArgs e)
 		{
+
 			Dialog d = new Dialog();
 			d.Title = "Erstelle eine neue Rekordliste";
 			var cbCourse = new ComboBox();
@@ -241,7 +235,7 @@ namespace Records.Common
 				}
 			};*/
 
-			var r = d.Run(this);
+			var run = d.Run(this);
 			/*var r = d.Run(this.ParentWindow);
 			db.Label = "Result: " + (r != null ? r.Label : "(Closed)");*/
 			d.Dispose();
@@ -249,59 +243,24 @@ namespace Records.Common
 
 		void HandleFindNewRecords(object sender, EventArgs e)
 		{
+			Console.WriteLine(1);
+			var r = storeData.AddRow();
+			Console.WriteLine(2);
+			storeData.SetValue(r, tfDisc, "D");
+			Console.WriteLine(db.Views.Count);
 
+			storeViews.SetValue(r, tfAge, "");
+			storeViews.SetValue(r, tfClub, "");
+			storeViews.SetValue(r, tfSwimmerName, ",");
+
+			Console.WriteLine(4);
 		}
 
 		void HandleSamplesTreeSelectionChanged (object sender, EventArgs e)
 		{
-			/*if (samplesTree.SelectedRow != null) {
-				if (currentSample != null)
-					sampleBox.Remove (currentSample);
-				Sample s = store.GetNavigatorAt (samplesTree.SelectedRow).GetValue (widgetCol);
-				if (s.Type != null) {
-					if (s.Widget == null)
-						s.Widget = (Widget)Activator.CreateInstance (s.Type);
-					sampleBox.PackStart (s.Widget, true);
-				}
-
-			//	Console.WriteLine (System.Xaml.XamlServices.Save (s.Widget));
-				currentSample = s.Widget;
-				Dump (currentSample, 0);
-			}*/
-		}
-		
-		/*void Dump (IWidgetSurface w, int ind)
-		{
-			if (w == null)
-				return;
-			var s = w.GetPreferredSize ();
-			Console.WriteLine (new string (' ', ind * 2) + " " + w.GetType ().Name + " " + s.Width + " " + s.Height);
-			foreach (var c in w.Children)
-				Dump (c, ind + 1);
-		}
-		
-		TreePosition AddSample (TreePosition pos, string name, Type sampleType)
-		{
-			//if (page != null)
-			//	page.Margin.SetAll (5);
-			return store.AddNode (pos).SetValue (nameCol, name).SetValue (iconCol, icon).SetValue (widgetCol, new Sample (sampleType)).CurrentPosition;
-		}*/
-	}
 	
-	/*class Sample
-	{
-		public Sample (Type type)
-		{
-			Type = type;
 		}
-
-		public Type Type;
-		public Widget Widget;
-	}*/
-
-	class View
-	{
-		public string label;
+	
 	}
 }
 

@@ -16,7 +16,7 @@ namespace Records.Common.Model
             string url = "https://dsvdaten.dsv.de/Modules/Clubs/Index.aspx?StateID=14";
             string url_prefix = "https://dsvdaten.dsv.de/Modules/Clubs/";
 
-            RecordDB db = new RecordDB("");
+            RecordDB db = new RecordDB();
 
             var web = new HtmlWeb();
             var doc = web.Load(url);
@@ -179,8 +179,8 @@ namespace Records.Common.Model
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";
 
-
-                var postData = "__EVENTTARGET=" + Uri.EscapeDataString(clink[0].OuterHtml.Split("&#39;")[1]);
+				var spl = new string[] { "&#39;" };
+                var postData = "__EVENTTARGET=" + Uri.EscapeDataString(clink[0].OuterHtml.Split(spl,StringSplitOptions.None)[1]);
                 postData += "&__EVENTARGUMENT=";
                 postData += "&__LASTFOCUS=";
                 postData += "&__VIEWSTATE=" + EncodeIt(viewstate);
@@ -220,7 +220,7 @@ namespace Records.Common.Model
                     {
                         var name = row.SelectSingleNode("./td[2]/a").InnerText.Trim();
                         var sexstr = row.SelectSingleNode("./td[1]").InnerText.Trim();
-                        var sex = (sexstr.StartsWith('m')) ? Sex.Male : Sex.Female;
+                        var sex = (sexstr.StartsWith('m'.ToString())) ? Sex.Male : Sex.Female;
 
                         var birthstr = row.SelectSingleNode("./td[3]").InnerText.Trim();
                         var birth = uint.Parse(birthstr);

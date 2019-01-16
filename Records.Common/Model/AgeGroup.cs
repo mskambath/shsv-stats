@@ -27,7 +27,12 @@ namespace Records.Common.Model
             }        
         }
 
-        public bool Covers(uint age) {
+		public bool IsOpen()
+		{
+			return MinimumAge == 0 && MaximumAge >= 99 ;
+		}
+
+		public bool Covers(uint age) {
             return (age <= this.MaximumAge) && (age >= this.MinimumAge);
         }
 
@@ -55,5 +60,11 @@ namespace Records.Common.Model
             else
                 return this.MinimumAge.ToString() + "-" + this.MaximumAge.ToString();
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			if (!(obj is AgeGroup)) return false;
+			return this.MinimumAge == ((AgeGroup)obj).MinimumAge && this.MaximumAge == ((AgeGroup)obj).MaximumAge; 
+		}
+	}
 }

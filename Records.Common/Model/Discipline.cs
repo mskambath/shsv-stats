@@ -32,12 +32,25 @@ namespace Records.Common.Model
 		int BaseLength;
 		Records.Common.Model.SwimType SwimType;
 
-		bool IsSingleDiscipline()
+		public Discipline(int factor, int baselength, SwimType swimType) {
+			this.Factor = factor;
+			this.BaseLength = baselength;
+			this.SwimType = swimType;
+		}
+
+		public Discipline(int baselength, SwimType swimType)
+		{
+			this.Factor = 1;
+			this.BaseLength = baselength;
+			this.SwimType = swimType;
+		}
+
+		public bool IsSingleDiscipline()
 		{
 			return Factor == 1;
 		}
 
-		bool IsTeamDiscipline() {
+		public bool IsTeamDiscipline() {
 			return Factor > 1;
 		}
 
@@ -59,15 +72,16 @@ namespace Records.Common.Model
 		{
 			switch(type)
 			{
-				case Model.SwimType.None: return "R"; break;
-				case Model.SwimType.Butterfly: return "S"; break;
-				case Model.SwimType.Backstroke: return "R"; break;
-				case Model.SwimType.Breaststroke: return "B"; break;
-				case Model.SwimType.Freestyle: return "F"; break;
-				case Model.SwimType.Medley: return "L"; break;
+				case Model.SwimType.None: return "R"; 
+				case Model.SwimType.Butterfly: return "S"; 
+				case Model.SwimType.Backstroke: return "R"; 
+				case Model.SwimType.Breaststroke: return "B"; 
+				case Model.SwimType.Freestyle: return "F"; 
+				case Model.SwimType.Medley: return "L"; 
 			}
 			return "";
 		}
+
 		public static Discipline Parse(string str)
 		{
 			var disc = new Discipline();
@@ -79,10 +93,10 @@ namespace Records.Common.Model
 			else
 			{
 				disc.Factor = 1;
-				disc.BaseLength = int.Parse(str);
+				disc.BaseLength = int.Parse(str.Substring(0,str.Length - 1));
 			}
 			disc.SwimType = ParseSwimTypeCode(str[str.Length - 1]);
-
+			return disc;
 		}
 
 		public override string ToString()
@@ -91,6 +105,16 @@ namespace Records.Common.Model
 				return Factor + "x" + BaseLength + SwimTypeCode(SwimType);
 			return BaseLength + SwimTypeCode(SwimType);
 
+		}
+
+		public override bool Equals(Object obj)
+		{
+			if (obj is Discipline)
+			{
+				Discipline d = (Discipline) obj;
+				return d.Factor == this.Factor && d.BaseLength == this.BaseLength && d.SwimType == this.SwimType;
+			}
+			return false;
 		}
 	}
 }

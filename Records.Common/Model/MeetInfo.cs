@@ -13,9 +13,9 @@ namespace Records.Common.Model
         public CourseType CourseType;
         public DateTime FirstDate()
         {
-            if (DateRange.Contains('-'))
+            if (DateRange.Contains("-"))
             {
-                return DateTime.Parse(DateRange.Split("-")[0]);
+                return DateTime.Parse(DateRange.Split('-')[0]);
             }
             else
             {
@@ -24,9 +24,9 @@ namespace Records.Common.Model
         }
         public DateTime LastDate()
         {
-            if (DateRange.Contains('-'))
+            if (DateRange.Contains("-"))
             {
-                return DateTime.Parse(DateRange.Split("-")[1]);
+                return DateTime.Parse(DateRange.Split('-')[1]);
             }
             else
             {
