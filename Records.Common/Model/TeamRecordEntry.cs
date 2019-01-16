@@ -1,6 +1,6 @@
 ﻿using System;
 using Records.Common;
-namespace Model
+namespace Records.Common.Model
 {
     public struct TeamRecordEntry
     {

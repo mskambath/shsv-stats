@@ -70,15 +70,15 @@
     <Compile Include="Samples\PopupWindows.cs" />
     <Compile Include="Samples\TreeViewCustomStore.cs" />
     <Compile Include="Samples\TreeViewEvents.cs" />
-    <Compile Include="Model\AgeGroup.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\CourseType.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\MeetInfo.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\Session.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\RecordDB.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\Sex.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\SingleRecordEntry.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\TeamRecordEntry.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
-    <Compile Include="Model\TimingType.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <Compile Include="Model\AgeGroup.cs" />
+    <Compile Include="Model\CourseType.cs" />
+    <Compile Include="Model\MeetInfo.cs" />
+    <Compile Include="Model\Session.cs" />
+    <Compile Include="Model\RecordDB.cs" />
+    <Compile Include="Model\Sex.cs" />
+    <Compile Include="Model\SingleRecordEntry.cs" />
+    <Compile Include="Model\TeamRecordEntry.cs" />
+    <Compile Include="Model\TimingType.cs" />
     <Compile Include="Model\SwimType.cs" />
     <Compile Include="Model\Club.cs" />
     <Compile Include="Model\Discipline.cs" />
