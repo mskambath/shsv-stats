@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace Records.Common.Model
 {
@@ -192,6 +193,31 @@ namespace Records.Common.Model
             }
             return ret;
         }
-    }
+
+		void Save()
+		{
+			var doc = new System.Xml.XmlDocument();
+			var xmlDeclaration = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
+			var root = doc.DocumentElement;
+			doc.InsertBefore(xmlDeclaration, root);
+			var records = doc.CreateElement("records");
+			doc.AppendChild(records);
+			var tables = doc.CreateElement(string.Empty, "tables", string.Empty);
+			var singleRecords = doc.CreateElement(string.Empty, "srec", string.Empty);
+			var teamRecords = doc.CreateElement(string.Empty, "trec", string.Empty);
+			records.AppendChild(singleRecords);
+			records.AppendChild(teamRecords);
+			records.AppendChild(tables);
+
+			// single records:
+			foreach(var s in this.mSingleStorage)
+			{
+				var r = doc.CreateElement(string.Empty,"record", string.Empty);
+				var dsvId = doc.CreateAttribute("id");
+				dsvId.Value = s.SwimmerId;
+				r.Attributes.Append(dsvId);
+			}
+		}
+	}
 }
 

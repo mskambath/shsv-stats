@@ -172,6 +172,7 @@ namespace Records.Common
 			var contentBox = new VBox();
 			var headerBox1 = new HBox();
 			var headerBox2 = new HBox();
+
 			contentBox.PackStart(headerBox1);
 			contentBox.PackStart(headerBox2);
 
@@ -217,6 +218,11 @@ namespace Records.Common
 
 			headerBox1.PackStart(cbSwimType);
 
+			var teMeet = new TextEntry();
+			var meetBox = new HBox();
+			meetBox.PackStart(new Label("Wettkampf:"));
+			meetBox.PackStart(teMeet,true);
+			contentBox.PackStart(meetBox);
 
 
 			headerBox1.ExpandHorizontal = true;
