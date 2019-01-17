@@ -8,7 +8,20 @@ namespace Records.Common.Model
 {
     class Session
     {
-        static void Main(string[] args)
+	public RecordDB db;
+
+		public class ProgressEventArgs
+		{
+			public ProgressEventArgs(double p) { Progress = p; }
+			public double Progress { get; } // readonly
+		}
+
+		public delegate void ProgressEventHandler(object sender, ProgressEventArgs e);
+
+		// Declare the event.
+		public event ProgressEventHandler ProgressEvent;
+
+		public void Main()
         {
             Console.WriteLine("SHSV - Rekordsuche");
             Console.WriteLine("==================");
@@ -16,7 +29,7 @@ namespace Records.Common.Model
             string url = "https://dsvdaten.dsv.de/Modules/Clubs/Index.aspx?StateID=14";
             string url_prefix = "https://dsvdaten.dsv.de/Modules/Clubs/";
 
-            RecordDB db = new RecordDB();
+            //RecordDB db = new RecordDB();
 
             var web = new HtmlWeb();
             var doc = web.Load(url);
@@ -24,16 +37,26 @@ namespace Records.Common.Model
             // Check for every club associated to the selected region all participated
             // competitions in the DSV result database
             var clubnodes = doc.DocumentNode.SelectNodes("//a[starts-with(@href, 'Club.aspx?ClubID')]");
+
+			var nClubs = clubnodes.Count;
+			var pClubs = 0;
             foreach (HtmlNode clublink in clubnodes)
             {
 
 
                 Console.Write("- " + clublink.InnerText.PadLeft(30, ' ') + "\t");
                 var target = clublink.Attributes[0].Value;
+
                 AnalyseClub(clublink.InnerText, url_prefix + target, target.Split('=')[1].Trim(),db);
                 Console.WriteLine(" [Complete]");
-            }
-            Console.ReadLine();
+
+				pClubs++;
+				if(ProgressEvent != null)
+				{
+					ProgressEvent(this, new ProgressEventArgs(1.0 * pClubs / nClubs));
+				}
+			}
+            
         }
 
 
@@ -86,7 +109,7 @@ namespace Records.Common.Model
             return ret;   
         }
 
-        static MeetInfo ExtractMeetInfo(HtmlDocument meetDocument)
+         MeetInfo ExtractMeetInfo(HtmlDocument meetDocument)
         {
             var MeetLocation = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__locationdataLabel']").InnerText;
             var MeetDateRange = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__datedataLabel']").InnerText;
@@ -130,14 +153,16 @@ namespace Records.Common.Model
             return result;
         }
 
-        static void AnalyseClub(string clubname, string cluburl, string xcid, RecordDB recorddb)
+         void AnalyseClub(string clubname, string cluburl, string xcid, RecordDB recorddb)
         {
             var web = new HtmlWeb();
             web.UseCookies = true;
             var doc = web.Load(cluburl);
 
-            var vidlabel = doc.DocumentNode.SelectSingleNode("//span[@id='ContentSection__clubidLabel']");
-            var dsv_vid = vidlabel.InnerText;
+			var clubNameLabel = doc.DocumentNode.SelectSingleNode("//span[@id='ContentSection__headerLabel']");
+			var vidlabel = doc.DocumentNode.SelectSingleNode("//span[@id='ContentSection__clubidLabel']");
+			var clubName = clubNameLabel.InnerText;
+            var clubId = vidlabel.InnerText;
 
             var meets = doc.DocumentNode.SelectNodes("//a[starts-with(@href, '/Modules/Results/Meet.aspx?MeetID')]");
             if (meets == null) return;
@@ -219,7 +244,9 @@ namespace Records.Common.Model
                     foreach (var row in rows)
                     {
                         var name = row.SelectSingleNode("./td[2]/a").InnerText.Trim();
-                        var sexstr = row.SelectSingleNode("./td[1]").InnerText.Trim();
+						var surname = name.Split(',')[0].Trim();
+						var prename = name.Split(',')[1].Trim();
+						var sexstr = row.SelectSingleNode("./td[1]").InnerText.Trim();
                         var sex = (sexstr.StartsWith('m'.ToString())) ? Sex.Male : Sex.Female;
 
                         var birthstr = row.SelectSingleNode("./td[3]").InnerText.Trim();
@@ -229,13 +256,22 @@ namespace Records.Common.Model
                         if (timestr == "DS" || timestr == "NA" || timestr == "AB" || timestr == "AU")
                             continue;
                         var time = TimeSpanParse(timestr);
-                        //Console.WriteLine("      " + name + " ("+ birth + "): \t"+ time + " " + disc);
-                        var records = recorddb.TestSingleRecords(disc, sex,meetInfo.CourseType, birth, meetInfo.LastDate(), time);
+						//Console.WriteLine("      " + name + " ("+ birth + "): \t"+ time + " " + disc);
+
+                        var records = recorddb.TestSingleRecords(Discipline.Parse(disc), sex,meetInfo.CourseType, birth, meetInfo.LastDate(), time);
 
                         foreach (var record in records)
                         {
-                            Console.WriteLine("      " + name + " (" + birth + "): \t" + time + " " + disc);
-                            Console.WriteLine("      " + record.Surname + " (" + record.Agegroup.ToString() + "): \t" + record.Time.ToString() + " " + record.Discipline);
+							Console.WriteLine("      " + record.Surname + " (" + record.Agegroup.ToString() + "): \t" + record.Time.ToString() + " " + record.Discipline);
+							var x = record; 
+							x.Surname = surname;
+							x.Name    = prename;
+							x.Time = time;
+							x.Age = birthstr;
+							x.ClubId = clubId;
+							x.Club = clubName;
+							Console.WriteLine("    * " + name + " (" + birth + "): \t" + time + " " + disc);
+
                         }
                     }
 
@@ -272,6 +308,7 @@ namespace Records.Common.Model
 
                                     Console.WriteLine("      " + clubname + ": \t" + time + " " + disc);
                                     Console.WriteLine("      " + record.Club + ": \t" + record.Time.ToString() + " " + record.Discipline);
+
                                 }
                             }
                         }

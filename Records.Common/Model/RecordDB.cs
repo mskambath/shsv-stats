@@ -39,7 +39,7 @@ namespace Records.Common.Model
 			var ret = new List<SingleRecordEntry>();
 			foreach(var entry in mSingleStorage)
 			{
-				if (entry.sex == t.Sex && entry.Agegroup == t.AgeGroup)
+				if (entry.sex == t.Sex && entry.Agegroup == t.AgeGroup && entry.CourseType == t.CourseType)
 					ret.Add(entry);
 			}
 			return ret;
@@ -56,7 +56,7 @@ namespace Records.Common.Model
 				Date = "",
 				sex = s,
 				CourseType = c,
-				Time = new TimeSpan(0, 0, 0, 0, 00),
+				Time = new TimeSpan(0, 0, 0, 0, 0 * 10),
 				Discipline = new Discipline(length, swimType)
 			};
 			return entry;
@@ -160,50 +160,9 @@ namespace Records.Common.Model
 			//mSingleStorage = new List<SingleRecordEntry>();
             mTeamStorage = new List<TeamRecordEntry>();
 
-            mSingleStorage.Add(new SingleRecordEntry() {
-                Club = "XYZ", Name="HANS",Surname="XYE",
-                Agegroup = new AgeGroup(0, 99),
-                Date = "",
-                sex = Sex.Male,
-                CourseType = CourseType.Short,
-                Time = new TimeSpan(0, 0, 0, 25, 00),
-                Discipline = Discipline.Parse("50S")
-			});
-            mSingleStorage.Add(new SingleRecordEntry()
-            {
-                Club = "50FRECORD",
-                Name = "HOLDER",
-                Surname = "XYE",
-                Agegroup = new AgeGroup(14, 14),
-                Date = "",
-                sex = Sex.Male,
-                CourseType = CourseType.Short,
-                Time = new TimeSpan(0, 0, 0, 27, 00),
-                Discipline = Discipline.Parse("50S")
-			});
-            mSingleStorage.Add(new SingleRecordEntry()
-            {
-                Club = "XYZ",
-                Name = "SIE",
-                Surname = "SIE",
-                CourseType = CourseType.Short,
-                Agegroup = new AgeGroup(0, 99),
-                Date = "",
-                sex = Sex.Female,
-                Time = new TimeSpan(0, 0, 0, 27, 00),
-                Discipline = Discipline.Parse("50S")
-            });
-            //mTeamStorage.Add(new TeamRecordEntry() { Club = "XYZ", Date = new DateTime(2000, 01, 01), sex = Sex.Male, Time = new TimeSpan(0, 0, 3, 36, 00), Discipline = "4x50 F" })
-            mTeamStorage.Add(new TeamRecordEntry() { 
-            Club = "XYZ", 
-            CourseType = CourseType.Short,
-            Date = "", 
-            sex = Sex.Male,
-            Time = new TimeSpan(0, 0, 1, 36, 00),
-             Discipline = new Discipline(4,50,SwimType.Freestyle) });
         }
 
-        public IList<SingleRecordEntry> TestSingleRecords(string discipline, Sex sex, CourseType course, uint birthyear, DateTime date, TimeSpan time)
+        public IList<SingleRecordEntry> TestSingleRecords(Discipline discipline, Sex sex, CourseType course, uint birthyear, DateTime date, TimeSpan time)
         {
             var ret = new List<SingleRecordEntry>();
             foreach(SingleRecordEntry entry in mSingleStorage) { 
@@ -211,7 +170,7 @@ namespace Records.Common.Model
                 && (entry.sex==sex || entry.sex==Sex.Mixed)
                 && entry.Agegroup.Covers(birthyear,date)
                 && (entry.CourseType == course)
-                && time<entry.Time) {
+                && (time<entry.Time|| entry.Time.Equals(new TimeSpan(0)))) {
                     ret.Add(entry);
                 }
             }

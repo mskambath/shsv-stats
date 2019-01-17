@@ -93,7 +93,21 @@ namespace Records.Common.Model
 			else
 			{
 				disc.Factor = 1;
-				disc.BaseLength = int.Parse(str.Substring(0,str.Length - 1));
+				try
+				{
+					if(str.Contains("Beine"))
+					{
+						str = str.Split(' ')[0];
+							disc.SwimType = SwimType.None;
+					} else if (str.Contains("Zwischenlauf"))
+					{
+						str = str.Replace("Zwischenlauf","").Trim();
+					}
+					disc.BaseLength = int.Parse(str.Substring(0, str.Length - 1));
+				} catch(Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
 			}
 			disc.SwimType = ParseSwimTypeCode(str[str.Length - 1]);
 			return disc;

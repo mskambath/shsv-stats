@@ -57,9 +57,7 @@
     <Compile Include="Samples\TreeViews.cs" />
     <Compile Include="Samples\PanedViews.cs" />
     <Compile Include="Samples\ListBoxSample.cs" />
-    <Compile Include="Samples\ProgressBarSample.cs" />
     <Compile Include="Samples\Markdown.cs" />
-    <Compile Include="Samples\ListView2.cs" />
     <Compile Include="Samples\WebViewSample.cs" />
     <Compile Include="Samples\MessageDialogs.cs" />
     <Compile Include="Samples\MultithreadingSample.cs" />
