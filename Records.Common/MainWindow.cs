@@ -34,7 +34,7 @@ namespace Records.Common
 		VBox sampleBox;
 
 
-		public MainWindow ()
+		public MainWindow()
 		{
 			Title = "SHSV Rekordverwaltung";
 			Width = 500;
