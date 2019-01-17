@@ -4,6 +4,7 @@ namespace Records.Common.Model
 {
     public struct MeetInfo
     {
+		public string Name;
         public string Location;
         public string DateRange;
         public string Organizer;

@@ -10,6 +10,7 @@ namespace Records.Common.Model
         public string Club;
 		public string ClubId;
 		public string Date;
+		public string MeetName;
         public TimeSpan Time;
         public Discipline Discipline;
         public AgeGroup Agegroup;

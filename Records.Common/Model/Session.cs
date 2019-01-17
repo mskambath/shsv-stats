@@ -109,9 +109,10 @@ namespace Records.Common.Model
             return ret;   
         }
 
-         MeetInfo ExtractMeetInfo(HtmlDocument meetDocument)
+         MeetInfo ExtractMeetInfo(HtmlDocument meetDocument, string meetName)
         {
-            var MeetLocation = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__locationdataLabel']").InnerText;
+			//var MeetName = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__locationdataLabel']").InnerText;
+			var MeetLocation = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__locationdataLabel']").InnerText;
             var MeetDateRange = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__datedataLabel']").InnerText;
             var MeetTiming =  meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__timingdataLabel']").InnerText;
             var MeetCourse = meetDocument.DocumentNode.SelectSingleNode("//span[@id='ContentSection__coursedataLabel']").InnerText;
@@ -120,8 +121,11 @@ namespace Records.Common.Model
             MeetInfo result = new MeetInfo();
             string[] dotspl = MeetDateRange.Split('.');
             result.Year = int.Parse( dotspl[dotspl.Length - 1]);
-            result.Location = MeetLocation;
+			result.Location = MeetLocation;
+
             result.DateRange = MeetDateRange;
+			result.Organizer = MeetOrga;
+			result.Name = meetName;
             switch (MeetTiming)
             {
                 case "Handzeit":
@@ -189,7 +193,7 @@ namespace Records.Common.Model
                 var wkdoc = new HtmlDocument();
                 wkdoc.LoadHtml(responseFromServer);
 
-                MeetInfo meetInfo = ExtractMeetInfo(wkdoc);
+                MeetInfo meetInfo = ExtractMeetInfo(wkdoc,meetlink.InnerText);
                 if (meetInfo.Timing != TimingType.Auto)
                     continue;
 
@@ -270,6 +274,8 @@ namespace Records.Common.Model
 							x.Age = birthstr;
 							x.ClubId = clubId;
 							x.Club = clubName;
+							x.MeetName = meetInfo.Name;
+							x.Date = meetInfo.DateRange.ToString();
 							Console.WriteLine("    * " + name + " (" + birth + "): \t" + time + " " + disc);
 
                         }

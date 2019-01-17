@@ -2,6 +2,7 @@ using System;
 using Xwt;
 using Xwt.Drawing;
 using System.Xml;
+using System.Threading;
 
 namespace Records.Common
 {
@@ -13,12 +14,15 @@ namespace Records.Common
 		ListView lvViews;
 		ListView lvData;
 
+		Thread bgThread;
+
 		DataField<string> tfDisc = new DataField<string>();
 		DataField<string> tfSwimmerName = new DataField<string>();
 		DataField<string> tfSwimmerId = new DataField<string>();
 		DataField<string> tfClub = new DataField<string>();
 		DataField<string> tfClubId = new DataField<string>();
 		DataField<string> tfAge = new DataField<string>();
+		DataField<string> tfMeetName = new DataField<string>();
 		DataField<string> tfTime = new DataField<string>();
 		DataField<string> tfDate = new DataField<string>();
 
@@ -77,7 +81,7 @@ namespace Records.Common
 		
 
 			storeViews = new ListStore(tfLabel,tfCourse,tfType,tfSex,tfAK);
-			storeData = new ListStore(tfDisc, tfSwimmerName, tfSwimmerId, tfClub, tfClubId, tfAge, tfDate, tfTime);
+			storeData = new ListStore(tfDisc, tfSwimmerName, tfSwimmerId, tfClub, tfClubId, tfAge, tfDate, tfMeetName, tfTime);
 
 			lvViews.DataSource = storeViews;
 			lvViews.GridLinesVisible = GridLines.Horizontal;
@@ -102,6 +106,7 @@ namespace Records.Common
 			lvData.Columns.Add(new ListViewColumn("Alter", new TextCellView { Editable = true, TextField = tfAge }));
 			lvData.Columns.Add(new ListViewColumn("Datum", new TextCellView { Editable = true, TextField = tfDate }));
 			lvData.Columns.Add(new ListViewColumn("Zeit", new TextCellView { Editable = true, TextField = tfTime }));
+			lvData.Columns.Add(new ListViewColumn("Wettkampf", new TextCellView { Editable = false, TextField = tfMeetName }));
 
 
 			foreach (var table in db.Views)
@@ -127,28 +132,10 @@ namespace Records.Common
 
 			box.Panel1.Content = vbox;
 			vbox.PackStart(lvViews, true);
-			var btn = new Button("Add Row");
-			btn.Clicked += delegate {
-				var row = storeViews.AddRow();
-				storeViews.SetValues(row, tfLabel, "New editable text", tfLabel, "New non-editable text");
-				lvViews.SelectRow(row);//.StartEditingCell(row, textCellView);
-			};
-			vbox.PackStart(btn, false, hpos: WidgetPlacement.Start);
-			vbox.PackStart(progressBar, true, hpos: WidgetPlacement.Fill);
+			lvViews.ExpandVertical = true;
+			vbox.PackStart(progressBar, true, vpos: WidgetPlacement.End);
 			progressBar.Fraction = 0.0;
 
-			//var btnbox = new VBox();
-			//vbox.Panel2.Content = btnbox;
-
-			var b1 = new  Button();
-			b1.Label = "Test";
-			//btnbox.PackStart(b1);
-			var b2 = new Button();
-			b2.Label = "Test2";
-			//btnbox.PackStart(b2);
-
-			vbox.PackStart(b1, false, hpos: WidgetPlacement.Start);
-			vbox.PackStart(b2, false, hpos: WidgetPlacement.Start);
 
 			sampleBox = new VBox ();
 			//sampleBox.PackStart (title);
@@ -237,17 +224,8 @@ namespace Records.Common
 
 			d.DefaultCommand = Command.Ok;
 
-			/*d.CommandActivated += (sender, e) => {
-				if (e.Command == custom)
-				{
-							
-					e.Handled = !MessageDialog.Confirm("Really close?", Command.Close);
-				}
-			};*/
 
 			var run = d.Run(this);
-			/*var r = d.Run(this.ParentWindow);
-			db.Label = "Result: " + (r != null ? r.Label : "(Closed)");*/
 			d.Dispose();
 		}
 
@@ -269,6 +247,10 @@ namespace Records.Common
 		
 		protected override void Dispose (bool disposing)
 		{
+			if(this.bgThread.IsAlive)
+			{
+				bgThread.Abort();
+			}
 			base.Dispose (disposing);
 
 		}
@@ -287,6 +269,7 @@ namespace Records.Common
 				storeData.SetValue(r, tfClubId, entry.ClubId);
 				storeData.SetValue(r, tfDate, entry.Date);
 				storeData.SetValue(r, tfTime, entry.Time.ToString(@"hh\:mm\:ss\.ff"));
+				storeData.SetValue(r, tfMeetName, entry.MeetName);
 			}
 		}
 
@@ -360,8 +343,8 @@ namespace Records.Common
 			var dsvSession = new Records.Common.Model.Session();
 			dsvSession.ProgressEvent += OnProgressEvent;
 			dsvSession.db = db;
-			var t = new System.Threading.Thread(dsvSession.Main);
-			t.Start();
+			bgThread = new Thread(dsvSession.Main);
+			bgThread.Start();
 		}
 
 		void HandleSamplesTreeSelectionChanged (object sender, EventArgs e)
