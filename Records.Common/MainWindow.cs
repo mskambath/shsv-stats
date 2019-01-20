@@ -126,7 +126,7 @@ namespace Records.Common
 			lvViews.RowActivated += OnSelectView;
 			lvViews.GotFocus += OnSelectView;
 			lvData.ButtonPressed += OnClickEntry;
-
+            lvData.RowActivated += LvData_RowActivated;
 			lvViews.SelectionMode = SelectionMode.Single;
 			
 
@@ -152,7 +152,12 @@ namespace Records.Common
 			CloseRequested += HandleCloseRequested;
 		}
 
-		void EditRecordEntry() {
+        private void LvData_RowActivated(object sender, ListViewRowEventArgs e)
+        {
+            EditRecordEntry();
+        }
+
+        void EditRecordEntry() {
 			Dialog d = new Dialog();
 			d.Title = "Bearbeite Rekord";
 
