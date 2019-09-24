@@ -80,6 +80,8 @@
     <Compile Include="Model\SwimType.cs" />
     <Compile Include="Model\Club.cs" />
     <Compile Include="Model\Discipline.cs" />
+    <Compile Include="Model\Athlete.cs" />
+    <Compile Include="Model\IndividualSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
