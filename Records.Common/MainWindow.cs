@@ -52,6 +52,10 @@ namespace Records.Common
 			file.SubMenu.Items.Add(mi_newRecords);
 			mi_newRecords.Clicked += HandleFindNewRecords;
 
+			MenuItem mi_dsvCrawl = new MenuItem("Collect DSVDB");
+			file.SubMenu.Items.Add(mi_dsvCrawl);
+			mi_dsvCrawl.Clicked += HandleDSVFullCrawl;
+
 			MenuItem mi_exit = new MenuItem ("Schließen");
 			file.SubMenu.Items.Add(mi_exit);
 			mi_exit.Clicked += delegate {
@@ -348,6 +352,15 @@ namespace Records.Common
 			var dsvSession = new Records.Common.Model.Session();
 			dsvSession.ProgressEvent += OnProgressEvent;
 			dsvSession.db = db;
+			bgThread = new Thread(dsvSession.Main);
+			bgThread.Start();
+		}
+
+		void HandleDSVFullCrawl(object sender, EventArgs e)
+		{
+			var dsvSession = new Records.Common.Model.IndividualSession();
+			//dsvSession.ProgressEvent += OnProgressEvent;
+			//dsvSession.db = db;
 			bgThread = new Thread(dsvSession.Main);
 			bgThread.Start();
 		}
